@@ -1,0 +1,35 @@
+K 25
+svn:wc:ra_dav:version-url
+V 70
+/svn/products/!svn/ver/70941/netinnet_qdk_start/netinnet_qdk_start/src
+END
+qdkConfig.properties
+K 25
+svn:wc:ra_dav:version-url
+V 91
+/svn/products/!svn/ver/70941/netinnet_qdk_start/netinnet_qdk_start/src/qdkConfig.properties
+END
+resource_CN.properties
+K 25
+svn:wc:ra_dav:version-url
+V 93
+/svn/products/!svn/ver/70941/netinnet_qdk_start/netinnet_qdk_start/src/resource_CN.properties
+END
+resource_EN.properties
+K 25
+svn:wc:ra_dav:version-url
+V 93
+/svn/products/!svn/ver/70941/netinnet_qdk_start/netinnet_qdk_start/src/resource_EN.properties
+END
+resource_TW.properties
+K 25
+svn:wc:ra_dav:version-url
+V 93
+/svn/products/!svn/ver/70941/netinnet_qdk_start/netinnet_qdk_start/src/resource_TW.properties
+END
+logback-test.xml
+K 25
+svn:wc:ra_dav:version-url
+V 87
+/svn/products/!svn/ver/70941/netinnet_qdk_start/netinnet_qdk_start/src/logback-test.xml
+END

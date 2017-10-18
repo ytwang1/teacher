@@ -1,0 +1,46 @@
+<?xml version="1.0" encoding="GBK" ?>
+
+<configuration>
+	<property name="project_name" value="QDKDemo" />
+	<!--  
+	<property name="LOG_HOME" value="D:/logback" />
+	-->
+  
+	<appender name="FILE" class="ch.qos.logback.core.rolling.RollingFileAppender">
+	  <file>QDKDemo_${byDay}.log</file>
+		<rollingPolicy class="ch.qos.logback.core.rolling.TimeBasedRollingPolicy">
+			<!-- 日志文件命名策略 -->
+			<FileNamePattern>log/${project_name}_%d{yyyy-MM-dd}.log</FileNamePattern>
+    		
+			<!-- 只保留30天的日志记录 -->
+			<MaxHistory>30</MaxHistory>
+    		
+		</rollingPolicy>
+    	
+		<encoder>
+			<pattern>%d{yyyy-MM-dd HH:mm:ss} |-%level in %class{30}::%method:%L - %msg %n</pattern>
+		</encoder>
+    	
+	</appender>
+
+	<appender name="STDOUT" class="ch.qos.logback.core.ConsoleAppender">
+		<!-- <Encoding>UTF-8</Encoding> -->
+		<encoder>
+			<!-- <pattern>%d{yyyy-MM-dd HH:mm:ss} |-%level-[%thread]-[%L: %class{30}.[%method] ] %msg %n</pattern> -->
+			<pattern>%d{yyyy-MM-dd HH:mm:ss} |- ${project_name} %level -| %msg %n</pattern>
+			<!-- <pattern>%d{yyyy-MM-dd HH:mm:ss} |-%level in %class{30}::%method:%L - %msg %n</pattern> -->
+		</encoder>
+	</appender>
+
+	<root level="debug">
+		<appender-ref ref="STDOUT" />
+		<!--  <appender-ref ref="FILE" />  -->
+	</root>
+	
+	<logger name="druid.sql" level="INFO">
+		<appender-ref ref="STDOUT" />
+	</logger>
+	
+	
+</configuration>
+

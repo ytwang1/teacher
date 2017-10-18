@@ -1,0 +1,536 @@
+﻿QDK使用说明：
+
+  1.所有项目中使用统一的web.xml文件，只配置一个QDKFilter。示例如下：
+  web.xml
+  <filter>
+    <description>QDK拦截器</description>
+    <filter-name>QDKFilter</filter-name>
+    <filter-class>com.netinnet.qdk.QDKFilter</filter-class>
+    <init-param>
+      <description>可选，配置文件相对于src目录的文件路径，默认为qdkConfig.properties</description>
+      <param-name>configFilePath</param-name>
+      <param-value>qdkConfig.properties</param-value>
+    </init-param>
+  </filter>
+  <filter-mapping>
+    <filter-name>QDKFilter</filter-name>
+    <url-pattern>/*</url-pattern>
+  </filter-mapping>
+
+  2.所有项目中需要配置的信息统一放在qdkConfig.properties文件中，配置说明参考附件：示例-qdkConfig.properties。
+  
+  3.所有需要使用AK的地方，统一使用配置文件中的别名，参考app.serviceList配置章节说明。
+  
+  4.所有的异步操作，需要开发人员在使用之前先进行判断以确定任务是否完成。典型的如：tohtml, zip, unzip,...
+  
+  5.所有的指令操作（'指令'+'|')会隐式存在一个变量名+_commandResult的变量，包含code,msg,data三个元素。
+    code只有200时为正确，其它均表示有错误。
+    msg为错误信息
+    data为返回值
+    示例如下：
+    temp.a=toHtml|{from:'a/a.doc'}
+    temp.a_commandResult.code=? !=200 nextAction=common/errorModule[echoError]
+    执行完成后会存在一个temp.a_commandResult变量，包含code,msg,data三个元素。
+  
+  6.关于静态资源的处理 
+    WebRoot/cdn/common  存放公司共享资源，开发环境自己放置，正式环境使用公司线上资源。项目中使用方式：R.getCommonPath( "a/a.js" ) ;
+    WebRoot/cdn/static　存放项目自己的资源，正式环境将被抽取到公司统一的cdn上项目对应的目录下。项目中使用方式：R.getStaticPath( "a/a.jpg" ) ;
+    WebRoot/cdn/i18n　　存放项目自己的国际化资源，正式环境将被抽取到公司统一的cdn上项目对应的目录下。项目中使用方式：R.getPath( "a/a.mp3" ) ;
+    
+  7.WEB-INF下的几个关键目录
+    action 存放action文件，不支持跳转操作，只能返回数据，如：html,xml,json等。
+    view 存放视图相关操作，只支持视图相关操作，如跳转，重定向等。
+    service 应用间调用服务接口，不支持跳转操作，只能返回数据，如：html,xml,json等。
+    
+  8.SessionUtil，ApplicationUtil方法中第一个参数统一修改为request。
+
+
+
+一些新特性的说明：
+
+
+
+  在action文件中使用[:##request.attr]方式可避免字符串'引号的转义问题
+
+
+
+  action节点的跳转
+
+    所有的action节点跳转统一使用nextAction,不再推荐使用next的跳转.
+    当前action中的节点跳转:
+    nextAction=[startNodeName]
+    跨action的节点跳转:
+    nextAction=parent/otherActionName[startNodeName]
+
+
+
+  action的模块化处理,节点重用。
+
+    a.action
+      [1]
+      request.nextAction==a[2]
+      nextAction=b[common]
+
+      [2]
+      html=html result from b[common] --> [:request.resultValue]
+    -----------------------------------------------------------------------
+    b.action
+      [common]
+      request.resultValue=result from b[common]
+      nextAction=[:request.nextAction]
+
+
+
+  action文件级切面处理
+
+    写在action文件顶部的没有节点名称的逻辑行被视为全局逻辑行，针对当前action文件有效。示例如下：
+    a.action
+      temp.a==aaaa
+      actionClass=testActionClass
+
+      [testNode]
+      html=testNode
+
+      [testNode2]
+      html=testNode2
+      temp.a=@ {10,20}select name from table where id=[:id] select name from table where id=?
+
+    则在执行testNode和testNode2时都会先执行temp.a==aaa和actionClass=testActionClass这两行逻辑。
+
+  
+
+  action文件中直接对map访问操作的支持
+    a.action
+      [mapDemo]
+      temp.resultMap=operation...
+      temp.resultMap.key1= ? ==2 next=?
+      temp.resultMap.data.a= ? == next=?
+      
+
+
+  action文件中操作cookie
+    a.action
+    [cookieDemo]
+    -- 设置cookie
+    cookie.a==001
+    html=cookieValue:[:cookie.a]
+    -- 删除cookie
+    cookie.a==
+    
+    
+  
+  过滤器支持
+    统一在qdkConfig.properties配置过滤器。程序中使用的过滤器须实现IFilter接口
+    public void init(NFilterConfig config) {}
+    public boolean doFilter(ServletRequest request, ServletResponse response, NFilterChain chain){}
+    public void destroy(){}
+
+    doFilter返回boolean类型，若该过滤器需要放行时返回return chain.doFilter(request, response, chain); 否则返回true,过滤链条终止；
+
+    若过滤器需要拦截多个URL，则用;隔开：例如filter.authFilter.url=/do;/doView
+  
+  
+  
+  多结果集类型支持,不再需要对已经生成的结果集进行二次转换包装，如从rowsetdto转换为json字符串，以提高性能。
+    支持结果集类型:rowsetdto, recordlist, jsonstr, record.没有指定时默认为rowsetdto类型.
+    json字符串及xml字符串等不是对象的结果集数据通过"变量名+_count"的方式获取到总的记录数用于分页等操作,
+    如：request.jsonStr=$select...; 语句执行完成后总记录数存放在:request.jsonStr_count变量中。
+
+    
+    request.dto1 = @select * from table
+    request.jsonStr = $select * from table
+    temp.dtoCount = [:request.jsonStr_count]
+  /** 此注释部分暂未使用 Begin
+    查询语句格式为: @+结果集类型+空格+{当前页,每页记录数}+查询类sql语句
+    request.dto2=@recordlist select * from table
+    request.dto3=@rowsetdto select * from table
+    request.jsonResult=@jsonstr select * from table
+  此注释部分暂未使用 End **/
+  
+  
+  
+  数据库分库分表支持,使用固定的唯一主键标识: system.nid
+    [dbDemo]
+    =insert into table values( [:system.nid], [:par1] ) ;
+    
+    代码获取NID： DateUtil.getNID();
+
+
+
+  系统登陆退出
+    [loginDemo]
+    =markLogin|{ck_LoginId:'123457',ck_LoginName:'测试',ck_RoleIds:'a,b,c',ck_roleNames:'a,v,v'}
+    =markLogout
+    
+    
+    
+  action参数校验支持
+    [login]
+      validate_option={skipNull:1, byteMode:1, quickFail:1}
+      validate={loginid:'s6-16',loginPwd:'s6-16'}
+      validate=[{name:'loginId',type:'s6-16',errormsg:'长度必须在在6~16位之间!'},{name:'loginPwd',type:'s6-12',errormsg:'长度必须在在6~12位之间!'},...]
+      request.validate_flag=? =1 next=[login_do]
+      -- 返回参数校验失败信息
+      html=[:request.validate_result]
+    [login_do]
+      html=logined
+
+    
+  validate_option配置项说明：
+    skipNull : (可选)仅在有值且值为1时表示值为空时不进行校验直接通过,不为空时才执行校验规则.默认:0。
+    byteMode : (可选)仅在有值且值为1时表示按字节处理长度,即英文视为1个字节,中文视为2个字节.默认:0。
+    quickFail : (可选)是否启用快速失败模式参数名,即有多项检查项时,遇到第一个失败项,即刻退出.此值仅在为1时有效.此选项仅在完整规则中适用,如果是简单规则,则默认为快速失败模式.默认:0。
+
+  返回值:
+    validate_flag : 仅在有值且值为1时表示顺利执行校验过程且校验通过.
+    validate_result : { "code": 200, "msg": "校验通过!" } or { "code": 412, "msg": "非法的请求参数!" }
+    VALIDATE_ERRORS : 错误信息,格式如:{"loginId":"长度必须在在6~16位之间!","content":"不能输入英文以外的字符!",...}
+
+  细则-校验规则：
+    校验规则分为"简捷模式"与"完整模式".
+    完整模式使用json格式数组表示,每一个校验字段表示为一个json对象.格式如:[{name:"loginId",type:"s6-16",errormsg:"长度必须在在6~16位之间!"},{name:"loginPwd",type:"s6-12",errormsg:"长度必须在在6~12位之间!"},...]
+    简捷模式直接使用字段名作为键,校验类型为值.格式如:{"loginId":"s6-16","loginPwd":"s6-12",...}
+
+  type支持的校验类型：
+     *：检测是否有输入，可以输入任何字符，不留空即可通过验证, 常用错误提示: "不能为空！",
+     *6-16：检测是否为6到16位任意字符, 常用错误提示: "请填写6到16位任意字符！",
+     n：数字类型, 常用错误提示: "请填写数字！",
+     n6-16：6到16位数字, 常用错误提示: "请填写6到16位数字！",
+     s：字符串类型, 常用错误提示: "不能输入特殊字符！",
+     s6-18：6到18位字符串, 常用错误提示: "请填写6到18位字符！",
+     S：英文字符串类型, 常用错误提示: "不能输入英文以外的字符！",
+     S6-18：6到18位英文字符串, 常用错误提示: "请填写6到18位英文字符！",
+     p：验证是否为邮政编码, 常用错误提示: "请填写邮政编码！",
+     m：手机号码格式, 常用错误提示: "请填写手机号码！",
+     e：email格式, 常用错误提示: "邮箱地址格式不对！",
+     url：验证字符串是否为网址, 常用错误提示: "请填写网址！"
+    
+ 
+     
+  敏感词检查 checkBadWord, 敏感词以类路径下的badWord.txt文件中配置的敏感词为准，每行一条。
+    参数说明：
+     
+    返回值说明：
+     code : 200为通过，其它为包含错误。
+     msg :  顺利执行为OK, 如果执行中出错此处是错误信息。
+     data : code为200或者执行出错时为空，其它情况下是过滤出的数据,格式：{ warn: [{敏感词:次数},{敏感词:次数}], error: [{违禁词:次数},{违禁词:次数}] }
+     
+    [sensitvewordDemo]
+    temp.checkResult=checkBadWord|[:content]
+     
+     
+      
+  文件上传 -- fileupload|{option:value,....}
+    参数说明：
+      is_single : (可选)是否为单文件上传模式,如果为1,则只返回第一个上传成功的文件路径,并且不会加上引号.其它值无效.默认为1。
+            多文件路径会加上引号并以逗号分隔，如："a.txt","b.txt".多文件时如果需要取单个文件名,则使用属性名+_索引的方式获取.
+            假设属性名为fileNames,则可以使用request.fileNames_0,request.fileNames_1,...的方式来获取单个文件名.
+            当前版本设置无效，暂时只支持单文件上传模式。
+      save_dir : (可选)上传文件保存的目录,相对于shareConfig中配置的保存目录,如果不指定,则使用年月/日结构的目录名。默认为空。
+      keep_dir : (可选)上传文件的目录是否保持固定,如果为1,则不自动创建目录下的年月/日结构目录名.但需要自己解决单目录文件数量过多时性能低下的问题.
+            此选项只在用户指定了上传文件保存目录的情况下适用,如果save_dir没有指定,则此选项无效。默认为0.
+      keep_name : (可选)上传文件是否保留原始文件名,如果为1,则不自动生成文件名.但需要自己解决重复时的覆盖问题。默认为0.
+      replace_file : (可选)要替换的文件路径，如果有值，则其它选项都将被忽略。
+    返回值说明：
+      1.等号左边指定的变量为存储上传后的文件路径使用的变量。
+      2.等号左边指定的变量名+_result的新变量名为存放完整的提示信息的变量名，存放的是一个键值对对象，元素为code,msg.
+        code表示响应代码，msg表示响应消息。
+          
+    -- 单文件上传示例
+    [upload1]
+    temp.filePath=fileupload|{save_dir:'sysdir',keep_dir:1,result_name:'filePath'}
+    -- 如果文件上传失败可以通过temp.filePath_result变量来获取错误信息。
+    request.render_result=={"code": 200, "msg": "上传成功!", "data": "[:temp.filePath]" }
+    nextAction=[api_result]
+
+    
+    /** 此功能仅作为演示讨论，暂不支持　
+     * -- 多文件上传示例
+     * [uploadN]
+     * temp.fileNames=fileupload|{is_single:0,save_dir:'sysdir',keep_dir:1,result_name:'fileNames'}
+     * request.render_result=={"code": 200, "msg": "上传成功!", "data": [[:temp.fileNames]] }
+     * nextAction=[api_result]
+     **/
+        
+    
+  
+  文件授权处理操作,交互过程为，A应用将授权操作的文件使用encode_aksk方法生成一串授权码，发给B应用，B应用使用授权码将A应用的文件获取到自己指定的云存储目录下。
+    A应用生成签名,参数说明：
+      file: 授权的文件名称
+      type: 授权操作类型,支持的类型：
+        get(获取),如果是获取to参数如果存在则将文件保存在to参数指定的路径下，否则将生成一个保存路径进行保存后返回生成的保存路径。
+        show(获取显示路径),如果是获取显示路径，则忽略to参数。直接返回授权后的文件获取路径。
+        cut(剪切,暂不支持)
+      dateTime: 授权产生时间，默认为当前系统时间，QDK中默认设置，无须手动设置。
+      AK: 当前应用的AK标识，qdk中默认增加，无须手动设置。
+    temp.data=encode_aksk|{file:"1/1.png",type:"get"}
+    
+    B应用使用签名获取文件,参数说明：
+      from: (必须) 如果以'FPATH:'开头，则QDK中自动请求固定的doservice方法(doservice:reqAK:)获取授权，并使用授权进行后续的文件处理操作。
+      fromAK: (必须) 需要获取资源的应用AK,与app.serviceList节点中配置的应用别名必须保持一致。
+      type: (可选)授权操作类型,默认为show，支持的类型：
+        get(获取),如果是获取to参数如果存在则将文件保存在to参数指定的路径下，否则将生成一个保存路径进行保存后返回生成的保存路径。
+        show(获取显示路径),如果是获取显示路径，则忽略to参数。直接返回授权后的文件获取路径。
+        cut(剪切,暂不支持)          
+      to: (可选) 如果不存在，则返回生成的保存后文件路径。 
+    使用示例：
+    =fileGetURL|{from:'FPATH:[:filePath]', fromAK:'fromAK'}
+    =fileGetURL|{to:"tempdir/1/1.png", from:'[temp.data]', fromAK:'fromAK', type:'get'}
+    java文件中使用：
+    NssFileUtil.fileGetURL( "{from:'FPATH:a/a.txt', fromAK:'001-ak'}" ) ;
+    
+    云存储服务解析出请求文件及AK等信息
+    temp.getFileMap=decode_aksk|{data:[:data], dataAK:""}
+    
+  
+  
+  文件下载 -- fileGetURL 
+    参数说明：
+      在action文件中如果文件名后增加了'&second'字符，则当前生成的连接有效时间为开发人员指定的时间（单位：秒），默认300秒。
+      在action文件中如果文件名后增加了'&download'字符（只能放在最后），则直接返回下载流。否则返回查看地址。
+      
+    request.showUrl=fileGetURL|[:request.toFileName]&second=300
+    request.downUrl=fileGetURL|[:request.toFileName]&download
+    request.downUrl=fileGetURL|[:request.toFileName]&download=下载后的最终文件名
+    Java文件或Jsp中调用：
+    <a href="<%=NssFileUtil.fileGetURL(src) %>">
+    <a href="<%=NssFileUtil.fileGetURL(src, true) %>">
+
+    
+
+  文件处理操作,参考原QDK中的文件操作指令，名称保持一致，但是云存储的文件操作命令在等号(=)右边。
+    目录级支持操作列表
+      =mkdir|a/b/c
+      // 删除操作为强制性不可恢复操作，如果参数没有进行严格的校验，可能因为参数传错导致项目下所有文件被清空的后果。使用须谨慎！！！
+      =rmdir|a/b/c
+      // 目录拷贝命令只支持向空目录进行复制，如果目标目录不为空，则复制失败。
+      =copydir|{fromDir:"abc/test/",toDir:"abc/test/111"}
+      =zip|{fromDir:"abc/test/",toDir:"abc/test/111",toName:"test.zip"}
+      =unzip|{from:"abc/test/test.zip",toDir:"testzip"}
+    
+    文件级支持操作列表
+      文件复制，支持图片处理规则，具体参考图片处理操作部分说明。
+      =copy|{from:'1/1.png?60w.png',to:'1/1_60w.png'}     
+      文件移动，支持图片处理规则，具体参考图片处理操作部分说明。
+      =move|{from:'1/1.png?60w_60h.png',to:'1/1_60_60.png'}
+      =delete|a/b/c/1.txt
+    
+    Java代码中调用
+      NssFileUtil.mkdir( "a/b/c" ) ; 
+      NssFileUtil.rmdir( "a/b/c" ) ; 
+      NssFileUtil.zip( "{from:'abc/test/', toDir:'abc/test/111'}, toName:'test.zip'" ) ; 
+      NssFileUtil.unzip( "{from:'abc/test/test.zip', toDir:'testzip'}" ) ; 
+      NssFileUtil.copy( "{from:'1/1.png?60w.png', to:'1/1_60w.png'}" ) ; 
+      NssFileUtil.move( "{from:'1/1.png?60w_60h.png', to:'1/1_60_60.png'}" ) ; 
+      NssFileUtil.delete( "a/b/c/1.txt" ) ; 
+
+  
+    
+  图片处理操作
+    图片支持缩放及增加水印操作,支持的文件类型为:.jpg,.png,.bmp,.wep
+    缩放参数：w(宽度),h(高度),x(倍数),q(质量)
+    水印参数：t(模板),r(填充方式)
+    组合方式为%n%param_..._%n%param.type
+    temp.imgurl = fileGetURL|[:request.toFileName]?100w.jpg
+  
+  
+  
+  文档转换支持，转换操作是异步进行的，所以需要在展示时先判断一下文件是否存在，如果不存在则说明转换尚未完成。 
+    参数说明：
+      from: 要转换的文件
+      todir: 转换后的文件保存的目录
+    返回　->　包含指定目录和生成的文件名的完整文件标识
+    
+    [convertDemo]
+    # 根据文件后缀名选择合适的转换引擎进行转换.此方法要求待转换文档使用标准的后缀名,如果后缀名被修改,则即使文档是合法的文档类型也无法转换成功.
+    temp.fileid=toHtml|{from:'a/b.doc',todir:'/office2html/auto'}
+    # 指定使用word转换引擎进行转换,不判断后缀名,适用于文档类型与后缀名不一致的情况.如果不是word类型的文档将转换失败.
+    temp.fileid=toHtml_word|{from:'a/b.doc',todir:'/office2html/word'}
+    # 指定使用excel转换引擎进行转换,不判断后缀名,适用于文档类型与后缀名不一致的情况.如果不是excel类型的文档将转换失败.
+    temp.fileid=toHtml_excel|{from:'a/b.doc',todir:'/office2html/excel'}
+    # 指定使用ppt转换引擎进行转换,不判断后缀名,适用于文档类型与后缀名不一致的情况.如果不是ppt类型的文档将转换失败.
+    temp.fileid=toHtml_ppt|{from:'a/b.doc',todir:'/office2html/ppt'}
+    # 指定使用pdf转换引擎进行转换,不判断后缀名,适用于文档类型与后缀名不一致的情况.如果不是pdf类型的文档将转换失败.
+    temp.fileid=toHtml_pdf|{from:'a/b.doc',todir:'/office2html/pdf'}
+    
+    
+  
+  异步任务执行情况查询
+    参数说明：
+      taskId: 任务标识，查询支持异步任务的相关指令中关于任务标识部分的获取说明
+      taskType: 任务类型，当前支持的任务类型有:toHtml(文档转换), zip(压缩，解压缩)
+    返回类型
+      {code:"", msg:""}
+    [checkTaskDemo] 
+    temp.fileid=toHtml|{from:'a/b.doc',todir:'/office2html/auto'}
+    temp.checkResultMap=checkTask|{taskId:'[:temp.fileid]',taskType:'toHtml'}
+    
+    [showTaskToHtmlDemo]
+    request.downUrl=fileGetURL|[:request.toFileName]
+
+
+  
+  md5,sha,等加密支持(部分完成)encode_开头的方法支持使用decode_解码，sign_开头的方法是单向不可逆的。
+    [urlDemo]
+    # 参数对形式,以大括号开头.value部分进行urlEncode之后将各参数对以&符号进行拼接返回.
+    temp.paramsURL=encode_url|{a:'[:a]',b:'[:b]'}
+    # 字符串形式,直接返回urlEncode之后的字符.
+    temp.paramURL=encode_url|[:a]
+    temp.param=decode_url|[:temp.paramURL]
+    
+    # 使用qdk中内置提供的默认对称加解密方法对数据进行加密与解密,通常用于数据加密后进行传输.
+    [qdkDemo]
+    temp.value=encode_qdk|{a:'[:a]',b:'[:b]'}
+    temp.map=decode_qdk|[:temp.value]
+    html=[:temp.map.a]-[:temp.map.b]
+    
+    # 使用AK,SK进行加解密。
+    [akskDemo]
+    temp.value=encode_aksk|{a:'[:a]',b:'[:b]'}
+    temp.map=decode_aksk|{data:[:temp.value], dataAK:[:reqAK]}
+    html=[:temp.map.a]-[:temp.map.b]
+    
+    # 获取指定参数的md5值
+    [md5Demo]
+    temp.idmd5,temp.pwdmd5=sign_md5|[:loginId],[:loginPwd]
+    
+    # 获取指定参数集合的签名值,具体签名计算规则参考网中网AK,SK签名算法说明,通常用于对明文传输的数据进行签名防篡改.
+    # 具体哪些参数需要进行签名计算请参考调用服务方的签名约束要求.
+    # 签名调用中内置的时间约束是30分钟，如果需要改变过期时间值，只需在加密的参数中增加：KEY_EXPIRETIME参数即可，单位：分钟。
+    [signDemo]
+    temp.signValue=sign_aksk|{loginId:'[:loginId]',loginPwd:'[:loginPwd]'}
+    # 检查指定签名是否合法的方法.通常用于服务提供方检查确认服务调用方数据签名是否正确.
+    temp.checkSign=check_sign_aksk|{checkAK:'[:checkAK]',checkSign:'[:temp.signValue]',checkValue:{loginId:'[:loginId]',loginPwd:'[:loginPwd]'}}
+  
+
+     
+  服务调用 -- doservice, doservicegetdto
+        每个项目可以提供一些供其它项目调用的服务，需要在WEB-INF目录下建立一个service目录来存放。
+        如果没有多版本的需求，则直接像写其它的action文件一样，在service目录下建立对应的目录及action文件。
+        如果有多版本的需求，则需要在根目录下建立版本目录，然后在版本目录下编写action文件。
+        其它项目组在调用服务时使用如下的形式调用:
+        temp.a=doService:xnsx?action=user&start=getInfo&version=1.0.0&type=json&par1=par1value
+        action,start为必须项，其它为可选项。　
+        返回数据结构：{code:200, msg:"", data:"${data}"}，其中code,msg部分开发者可通过设置request.serviceCode, 
+        request.serviceMsg,request.serviceData来强制替换默认值。　
+    如果操作不需要等待返回值，则可以使用不带赋值对象的方式进行异步调用，以提高响应速度。如：
+    =doService:xnsx?action=user&start=getInfo&version=1.0.0&type=json&par1=par1value
+    或者
+    TEMP.result=doService:xnsx?action=user&start=getInfo&version=1.0.0&type=json&par1=par1value
+    
+    代码调用方法  
+    DoServiceUtil.doService(request,v_ValueString);   有参数返回 
+    DoServiceUtil.doService(request,v_ValueString,false); 无参数返回，无需等待  
+
+
+    
+  邮件发送支持
+    参数说明：
+      to: 接收人列表,多个用户以逗号隔开,如:aa@netinnet.com,bb@netinnet.com
+      title: 邮件主题
+      content: 邮件内容,如果是{par1:"value", par2:"value"}的形式则使用指定的模板呈现邮件内容,如果没有指定模板编号,则使用默认的模板:mail_0.
+           如果是"TXT:邮件内容..."的形式,则使用纯文本格式呈现邮件内容.否则使用html格式呈现内容.如:"xx:<br/>hello."
+      templateId: (可选)邮件内容,使用的模板编号,支持的模板请参阅:qdk开发手册中的邮件模板列表部分.
+      from:  (可选)邮件发送者,特殊情况下可以指定发送者邮箱账号,如service@netinnet.com,支持使用的发送者账号请参阅qdk开发手册中的邮件发送者账号列表部分.
+      attachFile: (可选)需要发送的附件列表，多个文件以逗号分隔。附件使用上传文件后的完整路径。
+    [emailDemo]
+    =sendEmail|{to:'?',title:'?',content:'?'}
+
+
+
+  短信发送支持(未完成)
+    [smsDemo
+    to: 接收人列表,多个用户以逗号隔开,如:13612345678,18912345678,...
+    templateId: 短信内容,使用的模板编号,支持的模板请参阅:qdk开发手册中的短信模板列表部分.
+    content: 短信内容，对应模板里边的占位符，按照顺序以@@符号隔开。
+         例如模板内容为：dear {user},hello from {org}.
+         短信内容为：user1@@netinnet，
+         则最终短信为：dear user1,hello from netinnet.
+    =sendSMS|{to:'',templateId:'',content:''}
+    
+  
+  
+  消息队列支持, java类: QueueUtil
+        
+    统一的返回值格式说明：
+      code: 响应代码，200为成功，其它为失败。
+      msg:  失败时的错误信息。
+      data: 执行相应操作后返回的数据。
+    
+    功能列表：
+      创建/修改/查看/删除 队列
+        参数说明：
+          queueName: 队列名称，最大长度为128个字符，不可重复，重复则创建失败。（最终名称为：AK + '-' + 开发人员指定的名称）
+          invisibleTime: (可选)消息被收取后的不可见时间，单位：秒。默认为：30分钟。
+          expireTime: (可选)消息过期时间，超过此时间，单位：秒：默认为15天。
+        [queueCreateDemo]
+        temp.a=queueCreate|{queueName:"99cj-queue1", invisibleTime:"1800", expireTime:"1296000"}
+        
+        [queueUpdateDemo]
+        temp.a=queueUpdate|{queueName:"99cj-queue1", invisibleTime:"1800", expireTime:"1296000"}
+        
+        [queueGetInfoDemo]
+        temp.a=queueGetInfo|99cj-queue1
+        
+        [queueDelDemo]
+        temp.a=queueDel|99cj-queue1
+      
+      向队列发送消息
+        参数说明：
+          name: 已经存在的队列名称。
+          msg: 消息内容。
+          delayTime: (可选)消息延迟可见时间，超过此时间消息才可以被读取。单位：秒：默认为0，立即可见。
+          priority: (可选)消息优先级。默认为8，1最高，16最低。
+        [queuePutMsgDemo]
+        temp.a=queuePutMsg|{queueName:"99cj-queue1", msg: "message data", delayTime: "0", priority: "8" }     
+      从队列收取消息，一次只能获取一条，消息被获取后在指定的时间(创建队列时指定的invisibleTime属性值)内不可见。如果达到指定时间消息还没被删除，将重新可见。如果达到指定时间消息还没被删除，将重新可见。通常在任务执行完成后将消息删除，如果任务未完成机器宕机，任务将被其它执行者执行。 
+          返回值data部分说明：
+            messageId : 消息编号，在一个 Queue 唯一 
+            operationId : 消息临时主键，用来消费后，修改可见时间及删除消息的唯一值。只能使用一次。
+            messageBody : 消息正文 
+            messageBodyMD5 : 消息正文的 MD5 值 
+            enqueueTime : 消息发送到队列的时间，从1970年1月1日0点整开始的毫秒数 
+            firstDequeueTime : 第一次被消费的时间，从1970年1月1日0点整开始的毫秒数，如果DequeueCount为0，则与消息的 EnqueueTime相同 
+        [queueGetMsgDemo]               
+        temp.a=queueGetMsg|99cj-queue1
+        
+      修改消息可见时间
+        参数说明：
+          queueName: 已经存在的队列名称
+          operationId: 收到消息时获取到的操作编号
+          invisibleTime: (可选)消息的不可见时间，单位：秒，超过此时间后消息将可以再被其它执行者消费。默认为0，马上可以被其它执行者收取。          
+        [queueChangeMsgInvisibleTimeDemo]
+        temp.a=queueChangeMsgInvisibleTime|{queueName:"99cj-queue1", operationId:"", invisibleTime: "10" }
+        
+      任务执行完成后删除消息
+        [queueDelMsgDemo]               
+        temp.a=queueDelMsg|{queueName:"99cj-queue1", operationId:"[temp.a.data.operationId]" }
+  
+  
+  
+  定时任务支持(未完成)
+    [taskDemo]
+    =addTask|{time:"",taskClass:"",interval:""}
+  
+  
+  
+
+
+  
+
+
+
+
+
+待处理任务：
+.shell与impl的隔离。
+
+
+
+
+
+
+
+
+
+

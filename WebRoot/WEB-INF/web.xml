@@ -1,0 +1,47 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<web-app version="2.5" xmlns="http://java.sun.com/xml/ns/javaee"
+	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+	xsi:schemaLocation="http://java.sun.com/xml/ns/javaee 
+	http://java.sun.com/xml/ns/javaee/web-app_2_5.xsd">
+
+	<welcome-file-list>
+		<welcome-file>index.jsp</welcome-file>
+	</welcome-file-list>
+
+	<!-- 配置文件解析及处理 -->
+	<filter>
+		<filter-name>QDKFilter</filter-name>
+		<filter-class>com.netinnet.qdk.QDKFilter</filter-class>
+		<init-param>
+			<param-name>configFilePath</param-name>
+			<param-value>qdkConfig.properties</param-value>
+		</init-param>
+	</filter>
+	<filter-mapping>
+		<filter-name>QDKFilter</filter-name>
+		<url-pattern>/*</url-pattern>
+	</filter-mapping>
+
+	<servlet>
+		<servlet-name>dojsp</servlet-name>
+		<servlet-class>cn.netinnet.qdk.action.dojsp</servlet-class>
+	</servlet>
+	<servlet-mapping>
+		<servlet-name>dojsp</servlet-name>
+		<url-pattern>/dojsp</url-pattern>
+	</servlet-mapping>
+
+	<!-- 文件上传 -->
+	<servlet>
+		<servlet-name>doUploadDataFile</servlet-name>
+		<servlet-class>cn.netinnet.qdk.action.doUploadDataFile</servlet-class>
+		<init-param>
+			<param-name>dir</param-name>
+			<param-value>data</param-value>
+		</init-param>
+	</servlet>
+	<servlet-mapping>
+		<servlet-name>doUploadDataFile</servlet-name>
+		<url-pattern>/douploaddatafile</url-pattern>
+	</servlet-mapping>
+</web-app>

@@ -1,0 +1,91 @@
+<%@ page language="java" import="java.util.*" pageEncoding="GBK"%>
+<%@page import="cn.netinnet.qdk.util.RequestUtil"%>
+<%
+String path = request.getContextPath();
+String basePath = request.getScheme()+"://"+request.getServerName()+":"+request.getServerPort()+path+"/";
+%>
+<!DOCTYPE HTML>
+<html>
+<head>
+    <base href="<%=basePath%>">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge" />
+    <meta http-equiv="Content-Type" content="text/html; charset=GBK"/>
+    <title>注册</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1"/>
+    <style type="text/css">
+    div {
+    width: 265px;
+    padding: 2px 0;
+    }
+    div>span {
+    display: inline-block;
+    width: 80px;
+    text-align: right;
+    }
+    </style>
+    <jsp:include page="/jsp/public/Javascript.jsp"></jsp:include>
+</head>
+<body>
+  <form name="registForm">
+    <div>
+      <span>登录ID：</span><input type="text" name="loginId" />
+    </div>
+    <div>
+      <span>密码：</span><input type="password" name="password" />
+    </div>
+    <div>
+      <span>性别：</span><input type="radio" name="sex" value="1" id="sexM" checked="checked" /><label for="sexM">男</label><input type="radio" name="sex" value="0" id="sexW" /><label for="sexW">女</label>
+    </div>
+    <div>
+      <input id="submitRegist" type="button" value="注册" />
+      <input id="submitReset" type="reset" value="重置" />
+    </div>
+  </form>
+</body>
+<script type="text/javascript">
+$(function(){
+	// AJAX提交注册
+	$("#submitRegist").click(function(event){
+		  // 禁用submit的默认单击处理程序
+		  $.NinTools.preventDefault(event);
+
+			// 验证待提交注册的数据
+			var loginId = $.trim(registForm.loginId.value);
+			if($.NinTools.isStrContainBlankChar(loginId)) {
+				  alert("loginId不能为空,并且不能包含空白字符");
+				  return false;
+			}
+			var password = $.trim(registForm.password.value);
+			if(password.length < 6 || $.NinTools.isStrContainBlankChar(password)) {
+				  alert("密码长度不能低于6,并且不能包含空白字符");
+				  return false;
+			}
+
+			// AJAX 提交注册
+			var url = "do?action=user/user&start=regist";
+			var data = {
+					"loginId": loginId,
+					"password": password,
+					"sex": registForm.sex.value};
+			$.ajax({
+				  url: url,
+				  type: "POST",
+				  data: data,
+				  dataType: "json",
+				  beforeSend: function(xhr) {
+				  },
+				  complete: function(xhr, ts) {
+					    $("#submitReset").click();
+					},
+					success: function(jsonObj){
+						  alert(jsonObj.msg)
+					}
+			});
+
+		  // 阻止冒泡
+		  return false;
+	});
+});
+</script>
+</html>
+

@@ -1,0 +1,14 @@
+------------------------------------------------
+- 调用 sevice                                   -
+------------------------------------------------
+
+-- action 调用
+[invokeByAction]
+temp.returnData=doService:self?action=serviceTest&start=randomBlog
+JSON=[:temp.returnData]
+
+
+-- java代码 调用
+[invokeByJavacode]
+ActionClass=com.netinnet.action.InvokeServiceAction
+JSON=[:request.returnData]

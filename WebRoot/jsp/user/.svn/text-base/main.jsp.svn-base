@@ -1,0 +1,132 @@
+<%@ page language="java" import="java.util.*" pageEncoding="GBK"%>
+<%@page import="cn.netinnet.qdk.util.RequestUtil"%>
+<%@page import="cn.netinnet.qdk.util.SessionUtil"%>
+<%
+String path = request.getContextPath();
+String basePath = request.getScheme()+"://"+request.getServerName()+":"+request.getServerPort()+path+"/";
+%>
+<!DOCTYPE HTML>
+<html>
+<head>
+    <base href="<%=basePath%>">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge" />
+    <meta http-equiv="Content-Type" content="text/html; charset=GBK"/>
+    <title>主页</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1"/>
+    <style type="text/css">
+    #blogList {
+      border: 1px solid #EEE;
+      width: 400px;
+      min-height: 80px;
+      text-align: center;
+      padding: 5px;
+      overflow: auto;
+    }
+    ul {
+    margin-top: -10px;
+    list-style: none;
+    }
+    .font-1 {
+    font-size: 13px;
+    }
+    </style>
+    <jsp:include page="/jsp/public/Javascript.jsp"></jsp:include>
+</head>
+<body>
+  Welcome, <%=SessionUtil.getVarStringValue(request, "loginId") %> .<br/><br/>
+  <a href="doView?action=forward&start=toPublish">发表博文</a>
+  <a href="doView?action=forward&start=toUploadFile">上传文件</a>
+  <a href="#" id="logout">退出系统</a><br/><br/>
+  <%-- 博文列表容器，用于装载待渲染的内容 --%>
+  <div id="blogList"></div>
+</body>
+<%-- 博文列表模板，用于EJS渲染，装载具体数据的容器变量名称 list， 详见 jquery.NinTools.js 中的 rendering --%>
+<script type="text/javascript" id="blogTemplete">
+============&nbsp;博文列表&nbsp;============<br/><br/>
+[%if(list.length>0){%]
+<ul>
+  [%for(var i=0; list[i]; i++){%]
+	<li>
+    <a name="blog" blogId="[%=list[i].id%]" href="#">[%=list[i].title%]</a>
+    <a name="blogDelete" blogId="[%=list[i].id%]" href="#">删除</a>
+  </li>
+	[%}%]
+</ul>
+	<span class="font-1">共&nbsp;[%=totalCount%]&nbsp;篇文章</span>
+<select class="pagination">
+  [%
+    var totalPage = parseInt((totalCount+countPerPage-1) / countPerPage);
+   %]
+  [%for(var page=1; page<=totalPage; page++){%]
+	<option value="[%=page%]" [%if(page==curPage){%]selected="selected"[%}%]>第[%=page%]页</option>
+  [%}%]
+</select>
+[%}else{%]
+尚未发表文章!
+[%}%]
+</script>
+
+<script type="text/javascript">
+$(function(){
+	// 异步获取博文列表
+	var queryBlogListAjax = function(page) {
+			page = page || 1;
+			if(page < 1) page = 1;
+
+			var url = "do?action=user/blog&start=summaryList";
+			var data = {
+			    page: page
+			};
+
+			$.NinTools.rendering({
+				  url: url,
+				  data: data,
+				  renderEl : "blogList",      // 渲染的元素id
+			    templete : "blogTemplete",  // 使用的ejs模版id
+			}, function(result){ // 匿名函数系回调函数，其中result是AJAX请求得到的JSON响应数据，
+				                   // 可在该回调函数中对一些渲染后的DOM元素绑定一些事件,
+				                   // 例如在此处绑定  SELECT 元素的跳页 change 事件
+				  $("#blogList select.pagination").change(function(){
+					  queryBlogListAjax($(this).val());
+					});
+
+				  // 查看博文内容
+				  $("#blogList a[name='blog']").click(function(event){
+					    $.NinTools.preventDefault(event); // 禁用a标签的默认单击事件
+					    var blogId = $(this).attr("blogId");
+					    self.location.href="doView?action=forward&start=viewBlogContent&blogId="+blogId;
+			    });
+
+				  // 删除博文
+				  $("#blogList a[name='blogDelete']").click(function(event){
+					   $.NinTools.preventDefault(event); // 禁用a标签的默认单击事件
+					   var blogId = $(this).attr("blogId");
+					   var url = "do?action=user/blog&start=blogDelete";
+					   var data = {"blogId": blogId};
+					   $.post(url, data, function(result){
+						   if("200" == result.code) {
+							   alert("操作成功");
+							   queryBlogListAjax();
+							 }
+						 }, "json");
+		      });
+			});
+	};
+	
+	$("#logout").click(function(event){
+		  $.NinTools.preventDefault(event);
+
+		  $.post("do?action=user/user&start=logout", null, function(result){
+			  if("200" == result.code) {
+				  self.location.href = result.forwardUrl;
+				}
+			}, "JSON");
+	});
+
+	
+	// load后，自动异步获取博文列表
+	queryBlogListAjax(1);
+});
+</script>
+</html>
+

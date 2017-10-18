@@ -1,0 +1,58 @@
+---------------- 新增教师 ----------------
+---------------- 参数列表 ----------------
+-- teacherID:     账号
+-- teacherName:   姓名
+-- teacherSex:    性别
+-- teacherPhone:  电话
+-- teacherEmail:  邮箱
+---------------------------------------
+[create]=SQL
+=INSERT INTO teacherinfo(id, teacherID, teacherName, teacherSex, teacherPhone, teacherEmail) &&
+VALUES('[:System.nid]', '[:teacherID]', '[:teacherName]','[:teacherSex]','[:teacherPhone]','[:teacherEmail]')
+JSON={"code":"200","msg":"教师新增成功","forwardUrl":"doView?action=forward&start=toMain"}
+
+
+---------------- 编辑教师信息 ----------------
+---------------- 参数列表 ----------------
+-- teacherId:    博文主键ID
+-- teacherID:     账号
+-- teacherName:   姓名
+-- teacherSex:    性别
+-- teacherPhone:  电话
+-- teacherEmail:  邮箱
+---------------------------------------
+[edit]=SQL
+=UPDATE teacherinfo SET teacherID='[:teacherID]', teacherName='[:teacherName]', teacherSex='[:teacherSex]', teacherPhone='[:teacherPhone]', teacherEmail='[:teacherEmail]' WHERE id='[:teacherID]'
+JSON={"code":"200","msg":"教师新增成功"}
+
+---------------- 教师列表  ----------------
+---------------- 参数列表 -------------------
+-- page:      第几页
+------------------------------------------
+[summaryList]
+-- 每页记录数
+temp.countPerPage==10
+-- 分页查询并且返回json格式数据，注意返回的json格式是对象数组
+temp.jsonResust=${[:#page],[:#temp.countPerPage]}SELECT id,teacherName FROM teacherinfo
+-- 总记录数
+temp.totalCount==[:#temp.jsonResust_count]
+JSON={"code":"200","data":{"list":[:temp.jsonResust],"curPage":[:#page],"countPerPage":[:#temp.countPerPage],"totalCount":[:#temp.totalCount]}}
+
+
+---------------- 教师具体信息  ----------------
+---------------- 参数列表 -------------------
+-- teacherId:    教师ID
+------------------------------------------
+[teacherDetail]
+temp.teacherID,temp.teacherName,temp.teacherSex,temp.teacherPhone,temp.teacherEmail=SELECT teacherID,teacherName,teacherSex,teacherPhone,teacherEmail FROM teacherinfo WHERE id='[:teacherId]'
+JSON={"code":"200","teacherID":"[:temp.teacherID]","teacherName":"[:temp.teacherName]","teacherSex":"[:temp.teacherSex]","teacherPhone":"[:temp.teacherPhone]","teacherEmail":"[:temp.teacherEmail]"}
+
+
+
+---------------- 删除教师  ----------------
+---------------- 参数列表 -------------------
+-- teacherId:    博文教师ID
+------------------------------------------
+[teacherDelete]=SQL
+=DELETE FROM teacherinfo WHERE id='[:teacherId]'
+JSON={"code":"200","msg":"删除教师成功"}

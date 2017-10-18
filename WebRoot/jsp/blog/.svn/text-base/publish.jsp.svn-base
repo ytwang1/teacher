@@ -1,0 +1,88 @@
+<%@ page language="java" import="java.util.*" pageEncoding="GBK"%>
+<%@page import="cn.netinnet.qdk.util.RequestUtil"%>
+<%@page import="cn.netinnet.qdk.util.SessionUtil"%>
+<%
+String path = request.getContextPath();
+String basePath = request.getScheme()+"://"+request.getServerName()+":"+request.getServerPort()+path+"/";
+%>
+<!DOCTYPE HTML>
+<html>
+<head>
+    <base href="<%=basePath%>">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge" />
+    <meta http-equiv="Content-Type" content="text/html; charset=GBK"/>
+    <title>博文发表</title>
+    <style type="text/css">
+    form {
+    width: 660px;
+    text-align: center;
+    }
+    form > div {
+    padding: 5px;
+    }
+    .speciedWidth {
+      width: 400px;
+    }
+    </style>
+    <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1"/>
+    <jsp:include page="/jsp/public/Javascript.jsp"></jsp:include>
+</head>
+<body>
+  <form name="publishForm">
+    <div>
+      <span>标题:</span>
+      <input type="text" name="title" class="speciedWidth" />
+    </div>
+    <div>
+      <span>内容:</span>
+      <textarea rows="" cols="" name="content" class="speciedWidth"></textarea>
+    </div>
+    <div>
+      <input type="submit" id="publishBtn" value="发表" />
+      <input type="reset" value="清空" />
+    </div>
+  </form>
+</body>
+<script type="text/javascript">
+$(function(){
+	$("#publishBtn").click(function(event){
+		  $.NinTools.preventDefault(event);
+
+		  var title = $.trim(publishForm.title.value);
+		  var content = $.trim(publishForm.content.value);
+
+		  if(0 >= title.length) {
+			  alert("标题不能为空");
+			  return false;
+			}
+
+			// AJAX 提交
+			var url = "do?action=user/blog&start=publish";
+			var data = {
+					  "title": title,
+					  "content": content
+			};
+			$.ajax({
+				  url: url,
+				  data: data,
+				  type: "POST",
+				  dataType: "json",
+				  traditional: true,
+				  beforeSend: function(xhr) {},
+				  complete: function(xhr, ts) {},
+				  success: function(result) {
+					  if("200" === result.code) {
+						  alert("博文发表成功");
+						  self.location.href = result.forwardUrl;
+						} else {
+							  alert("失败");
+						}
+					}
+			});
+
+			return false;
+	});
+});
+</script>
+</html>
+

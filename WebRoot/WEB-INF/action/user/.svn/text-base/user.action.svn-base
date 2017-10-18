@@ -1,0 +1,80 @@
+---------------- 用户注册 ----------------
+---------------- 参数列表 ----------------
+-- loginId:   用于登录的ID
+-- password:  登录密码，需要MD5加密
+-- sex:       性别，1-男 0-女
+---------------------------------------
+[regist]
+NextAction=[regist_isLoginIdExists]
+
+
+-- 检查loginId是否已被占用
+[regist_isLoginIdExists]
+temp.isLoginIdExists=SELECT 1 FROM user WHERE loginId=trim('[:loginId]') AND ''<>trim('[:loginId]')
+temp.isLoginIdExists=? == Next=[regist_doInsert]
+temp.resultCode==404
+temp.resultMsg==注册失败，[:loginId]已被占用
+NextAction=[regist_result]
+
+
+-- 执行插入
+[regist_doInsert]=SQL
+-- MD5加密密码
+temp.md5Password=sign_md5|[:password]
+=INSERT INTO user(id, loginId, password, sex) &&
+VALUES('[:System.nid]', '[:loginId]', '[:temp.md5Password]', '[:sex]')
+temp.resultCode==200
+temp.resultMsg==注册成功
+NextAction=[regist_result]
+
+
+-- 注册业务返回的json对象,该json对象可根据具体业务自行定义,但一定要符合json规范
+-- code: 200-成功, 404-失败
+[regist_result]
+json={"code":"[:temp.resultCode]","msg":"[:temp.resultMsg]"}
+
+
+---------------- 用户登录 ----------------
+---------------- 参数列表 ----------------
+-- loginId:   用于登录的ID
+-- password:  登录密码，需要MD5加密
+---------------------------------------
+[login]
+temp.md5Password=sign_md5|[:password]
+temp.userId,temp.loginId,temp.sex=SELECT id, loginId, sex FROM user &&
+WHERE loginId='[:loginId]' AND password IN ('[:password]', '[:temp.md5Password]')
+temp.userId=? != Next=[login_success]
+temp.resultCode==404
+temp.resultMsg==登录失败
+temp.forwardUrl==
+NextAction=[login_result]
+
+
+-- 成功登录后做的一些必要记录操作
+[login_success]
+session.userId==[:temp.userId]
+session.loginId==[:temp.loginId]
+session.sex==[:temp.sex]
+-- 必须标记登录, 否则后续的action调用会被拦截, 除非是在 filter.authFilter.ignore_actions 中设置的不需要验证的action或具体节点
+=markLogin|{ck_LoginId:'[:session.userId]',ck_LoginName:'[:session.loginId]',ck_RoleIds:'a,b,c',ck_roleNames:'a,v,v'}
+temp.resultCode==200
+temp.resultMsg==登录成功
+temp.forwardUrl==doView?action=forward&start=toMain
+NextAction=[login_result]
+
+
+-- 登录业务返回的json对象,该json对象可根据具体业务自行定义,但一定要符合json规范
+-- code: 200-成功, 404-失败
+-- forwardUrl: "" (登录成功时浏览器跳转的页面, 登录失败则该值为空, 该值只有登录成功才有用处)
+[login_result]
+json={"code":"[:temp.resultCode]","msg":"[:temp.resultMsg]","forwardUrl":"[:temp.forwardUrl]"}
+
+
+---------------- 退出系统 ----------------
+[logout]
+session.userId==
+session.loginId==
+session.sex==
+=markLogout
+temp.forwardUrl==doView?action=public&start=toRoot
+JSON={"code":"200","msg":"成功退出系统","forwardUrl":"[:temp.forwardUrl]"}

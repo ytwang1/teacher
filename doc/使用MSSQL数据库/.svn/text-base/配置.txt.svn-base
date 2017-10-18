@@ -1,0 +1,12 @@
+# 以下是MSSQL使用的与MYSQL不同的配置
+
+# 数据库驱动程序: sqljdbc.jar
+
+# 驱动名称
+ds.sandtableDS.driverClassName=com.microsoft.sqlserver.jdbc.SQLServerDriver
+
+# 数据库连接地址。
+ds.sandtableDS.url=jdbc:sqlserver://127.0.0.1;databaseName=${yourDatabaseName};autoReconnect=true
+
+# 数据源类型。
+ds.sandtableDS.type=sqlserver

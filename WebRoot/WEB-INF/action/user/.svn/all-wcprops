@@ -1,0 +1,23 @@
+K 25
+svn:wc:ra_dav:version-url
+V 94
+/svn/products/!svn/ver/70941/netinnet_qdk_start/netinnet_qdk_start/WebRoot/WEB-INF/action/user
+END
+blog.action
+K 25
+svn:wc:ra_dav:version-url
+V 106
+/svn/products/!svn/ver/70941/netinnet_qdk_start/netinnet_qdk_start/WebRoot/WEB-INF/action/user/blog.action
+END
+user.action
+K 25
+svn:wc:ra_dav:version-url
+V 106
+/svn/products/!svn/ver/70941/netinnet_qdk_start/netinnet_qdk_start/WebRoot/WEB-INF/action/user/user.action
+END
+file.action
+K 25
+svn:wc:ra_dav:version-url
+V 106
+/svn/products/!svn/ver/70941/netinnet_qdk_start/netinnet_qdk_start/WebRoot/WEB-INF/action/user/file.action
+END

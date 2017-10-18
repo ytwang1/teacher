@@ -1,0 +1,8 @@
+---------------- 接收上传文件之后的后续操作 ----------------
+---------------- 参数列表 ----------------
+-- 据具体业务传递
+---------------------------------------
+[afterReceiverFile]
+ActionClass=com.netinnet.action.AfterReceiveUploadFileAction
+JSON={"code":"[:request.code]","msg":"[:request.msg]","data":[:request.data]}
+

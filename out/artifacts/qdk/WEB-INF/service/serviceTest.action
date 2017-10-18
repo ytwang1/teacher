@@ -1,0 +1,11 @@
+------------------------------------------------
+- service 文件夹下的所有 .action 都用来向外提供服务，     -
+- 不需要QDK验证。
+------------------------------------------------
+
+
+---------------- 获取随机一篇博文 ----------------
+[randomBlog]
+temp.index=SELECT CAST(RAND() * (COUNT(*)-1) AS UNSIGNED INTEGER) FROM blog
+temp.jsonResult=$SELECT * FROM blog LIMIT [:#temp.index], 1
+JSON={"blogs":[:temp.jsonResult]}

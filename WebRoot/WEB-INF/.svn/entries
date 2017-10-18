@@ -1,0 +1,77 @@
+10
+
+dir
+77805
+https://svn.internal.netinnet.com:8443/svn/products/netinnet_qdk_start/netinnet_qdk_start/WebRoot/WEB-INF
+https://svn.internal.netinnet.com:8443/svn/products
+
+
+
+2015-04-30T10:14:47.561737Z
+70941
+linxy
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+548caf87-b8a7-ea4f-a7ce-054a21699f59
+
+service
+dir
+
+lib
+dir
+
+view
+dir
+
+web.xml
+file
+
+
+
+
+2015-07-16T01:43:31.655511Z
+fed79acf2dba2be613d8a0857f6e839c
+2015-04-30T10:14:47.561737Z
+70941
+linxy
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+1436
+
+action
+dir
+
+classes
+dir
+

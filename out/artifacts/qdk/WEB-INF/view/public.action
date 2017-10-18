@@ -1,0 +1,25 @@
+------------------------------------------------
+- view 文件夹下的所有 .action 都只用来做Forward动作    -
+- 该action已在 filter.authFilter.ignore_actions -
+- 中注册,不必受检
+------------------------------------------------
+
+-- 跳转到index
+[toRoot]
+ForwardURL=index.jsp
+
+
+-- 跳转到登录页面
+[toLogin]
+request.title==Custom Title
+ForwardURL=jsp/user/login.jsp
+
+
+-- 跳转到注册页面
+[toRegist]
+ForwardURL=jsp/user/regist.jsp
+
+
+-- service用法介绍
+[toServiceUsage]
+ForwardURL=jsp/service/usage.jsp

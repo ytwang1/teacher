@@ -1,0 +1,56 @@
+---------------- 新增教师 ----------------
+---------------- 参数列表 ----------------
+-- teacherID:     账号
+-- teacherName:   姓名
+-- teacherSex:    性别
+-- teacherPhone:  电话
+-- teacherEmail:  邮箱
+---------------------------------------
+[create]=SQL
+=INSERT INTO teacherinfo(id, teacherID, teacherName, teacherSex, teacherPhone, teacherEmail) &&
+VALUES('[:System.nid]', '[:teacherID]', '[:teacherName]','[:teacherSex]','[:teacherPhone]','[:teacherEmail]')
+JSON={"code":"200","msg":"教师新增成功","forwardUrl":"doView?action=forward&start=toMain"}
+
+
+---------------- 编辑博文 ----------------
+---------------- 参数列表 ----------------
+-- blogId:    博文主键ID
+-- title:     标题
+-- content:   内容
+---------------------------------------
+[edit]=SQL
+=UPDATE blog SET title='[:title]', content='[:content]' WHERE id='[:blogId]'
+JSON={"code":"200","msg":"博文发表成功"}
+
+
+---------------- 博文概要列表  ----------------
+---------------- 参数列表 -------------------
+-- page:      第几页
+------------------------------------------
+[summaryList]
+-- 每页记录数
+temp.countPerPage==10
+-- 分页查询并且返回json格式数据，注意返回的json格式是对象数组
+temp.jsonResust=${[:#page],[:#temp.countPerPage]}SELECT id, title FROM blog &&
+WHERE IFNULL(owner, '')<>'' AND owner='[:session.userId]'
+-- 总记录数
+temp.totalCount==[:#temp.jsonResust_count]
+JSON={"code":"200","data":{"list":[:temp.jsonResust],"curPage":[:#page],"countPerPage":[:#temp.countPerPage],"totalCount":[:#temp.totalCount]}}
+
+
+---------------- 博文具体内容  ----------------
+---------------- 参数列表 -------------------
+-- blogId:      博文ID
+------------------------------------------
+[blogDetail]
+temp.title,temp.content=SELECT title, content FROM blog WHERE id='[:blogId]'
+JSON={"code":"200","title":"[:temp.title]","content":"[:temp.content]"}
+
+
+---------------- 删除博文  ----------------
+---------------- 参数列表 -------------------
+-- blogId:      博文ID
+------------------------------------------
+[blogDelete]=SQL
+=DELETE FROM blog WHERE id='[:blogId]'
+JSON={"code":"200","msg":"删除博文成功"}

@@ -1,0 +1,13 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<project-module
+  type="WEB"
+  name="netinnet_qdk_start"
+  id="myeclipse.1430201369030"
+  context-root="/netinnet_qdk_start"
+  j2ee-spec="5.0"
+  archive="netinnet_qdk_start.war">
+  <attributes>
+    <attribute name="webrootdir" value="/WebRoot" />
+  </attributes>
+</project-module>
+

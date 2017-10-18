@@ -1,0 +1,33 @@
+------------------------------------------------
+- view 文件夹下的所有 .action 都只用来做Forward动作    -
+------------------------------------------------
+
+
+-- 登录后跳转到主页面
+[toMain]
+ForwardURL=jsp/user/main.jsp
+
+
+-- 前往发表博文
+[toPublish]
+ForwardURL=jsp/blog/publish.jsp
+
+
+-- 查看博文内容
+-- 参数
+-- blogId: 博文主键ID
+[viewBlogContent]
+request.blogId==[:blogId]
+ForwardURL=jsp/blog/content.jsp
+
+
+-- 上传文件
+[toUploadFile]
+ForwardURL=jsp/file/uploadFile.jsp
+
+
+-- 模拟sso验证错误
+-- app.ssoDomain 配置与使用不相符 或者 没对用户授权会跳转到 filter.authFilter.auth_fail 指定的页面
+-- 授权之后 且 app.ssoDomain 配置与使用相符 则会跳转到index.jsp
+[toError]
+ForwardURL=index.jsp

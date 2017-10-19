@@ -7,7 +7,7 @@ import java.util.Random;
 
 import javax.servlet.http.HttpServletRequest;
 
-public class test implements ActionClass {
+public class generateRandomPhone implements ActionClass {
     public ActionClassResultDTO execute(HttpServletRequest request) {
         System.out.print("###################");
         /*
@@ -20,7 +20,7 @@ public class test implements ActionClass {
                 //生成0~9 随机数
                 randomPhoneNo += random.nextInt(9);
             }
-            RequestUtil.addVar(request, "teacherPhone222", randomPhoneNo);
+            RequestUtil.addVar(request, "teacherRandomPhone", randomPhoneNo);
         }
         /*
 

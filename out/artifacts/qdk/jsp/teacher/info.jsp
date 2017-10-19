@@ -37,7 +37,7 @@
 <body>
 <div>
     <a href="doView?action=forward&start=toMain">返回</a>
-    <form name="blogForm">
+    <form name="teacherForm">
         <div>
             <span>账号:</span>
             <input type="text" name="teacherID" class="speciedWidth" />
@@ -59,7 +59,7 @@
             <input type="text" name="teacherEmail" class="speciedWidth" />
         </div>
         <div>
-            <input type="submit" id="editBtn" value="修改" class="btn btn-success" />
+            <input type="submit" id="infoBtn" value="修改" class="btn btn-success" />
         </div>
     </form>
 </div>
@@ -67,14 +67,14 @@
 <script type="text/javascript">
     $(function(){
         var teacherId = "<%=teacherId %>";
-        $("#editBtn").click(function(event){
+        $("#infoBtn").click(function(event){
             $.NinTools.preventDefault(event);
 
-            var teacherID = $.trim(blogForm.teacherID.value);
-            var teacherName = $.trim(blogForm.teacherName.value);
-            var teacherSex = $.trim(blogForm.teacherSex.value);
-            var teacherPhone = $.trim(blogForm.teacherPhone.value);
-            var teacherEmail = $.trim(blogForm.teacherEmail.value);
+            var teacherID = $.trim(teacherForm.teacherID.value);
+            var teacherName = $.trim(teacherForm.teacherName.value);
+            var teacherSex = $.trim(teacherForm.teacherSex.value);
+            var teacherPhone = $.trim(teacherForm.teacherPhone.value);
+            var teacherEmail = $.trim(teacherForm.teacherEmail.value);
 
             if(0 >= teacherID.length) {
                 alert("教师不能为空");
@@ -82,7 +82,7 @@
             }
 
             // AJAX 提交
-            var url = "do?action=user/teacher&start=edit";
+            var url = "do?action=user/teacher&start=info";
             var data = {
                 "teacherId": teacherId,
                 "teacherID": teacherID,
@@ -102,6 +102,7 @@
                 success: function(result) {
                     if("200" === result.code) {
                         alert("修改成功");
+                        self.location.href = result.forwardUrl;
                     } else {
                         alert("失败");
                     }
@@ -117,11 +118,11 @@
 
             // 异步获取博文具体内容
             $.post(url, data, function(result){
-                blogForm.teacherID.value = result.teacherID;
-                blogForm.teacherName.value = result.teacherName;
-                blogForm.teacherSex.value = result.teacherSex;
-                blogForm.teacherPhone.value = result.teacherPhone;
-                blogForm.teacherEmail.value = result.teacherEmail;
+                teacherForm.teacherID.value = result.teacherID;
+                teacherForm.teacherName.value = result.teacherName;
+                teacherForm.teacherSex.value = result.teacherSex;
+                teacherForm.teacherPhone.value = result.teacherPhone;
+                teacherForm.teacherEmail.value = result.teacherEmail;
             }, "json");
         };
 

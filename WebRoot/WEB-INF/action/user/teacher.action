@@ -21,9 +21,9 @@ JSON={"code":"200","msg":"教师新增成功","forwardUrl":"doView?action=forward&star
 -- teacherPhone:  电话
 -- teacherEmail:  邮箱
 ---------------------------------------
-[edit]=SQL
-=UPDATE teacherinfo SET teacherID='[:teacherID]', teacherName='[:teacherName]', teacherSex='[:teacherSex]', teacherPhone='[:teacherPhone]', teacherEmail='[:teacherEmail]' WHERE id='[:teacherID]'
-JSON={"code":"200","msg":"教师新增成功"}
+[info]=SQL
+=UPDATE teacherinfo SET teacherID='[:teacherID]', teacherName='[:teacherName]', teacherSex='[:teacherSex]', teacherPhone='[:teacherPhone]', teacherEmail='[:teacherEmail]' WHERE id='[:teacherId]'
+JSON={"code":"200","msg":"教师修改成功", "forwardUrl":"doView?action=forward&start=toMain"}
 
 ---------------- 教师列表  ----------------
 ---------------- 参数列表 -------------------

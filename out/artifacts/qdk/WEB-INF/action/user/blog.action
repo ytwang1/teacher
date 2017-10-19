@@ -18,7 +18,7 @@ JSON={"code":"200","msg":"教师新增成功","forwardUrl":"doView?action=forward&star
 -- title:     标题
 -- content:   内容
 ---------------------------------------
-[edit]=SQL
+[info]=SQL
 =UPDATE blog SET title='[:title]', content='[:content]' WHERE id='[:blogId]'
 JSON={"code":"200","msg":"博文发表成功"}
 

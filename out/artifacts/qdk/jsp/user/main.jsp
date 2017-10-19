@@ -114,8 +114,8 @@ $(function(){
 				  // 查看博文内容
 				  $("#teacherList a[name='teacher']").click(function(event){
 					    $.NinTools.preventDefault(event); // 禁用a标签的默认单击事件
-					    var teacherID = $(this).attr("teacherID");
-					    self.location.href="doView?action=forward&start=viewTeacherInfo&teacherID="+teacherID;
+					    var teacherId = $(this).attr("teacherId");
+					    self.location.href="doView?action=forward&start=viewTeacherInfo&teacherId="+teacherId;
 			    });
 
 				  // 删除博文

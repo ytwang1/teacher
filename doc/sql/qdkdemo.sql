@@ -22,7 +22,7 @@ DROP TABLE IF EXISTS `teacherinfo`;
 
 CREATE TABLE `teacherinfo` (
   `id` varchar(32) NOT NULL,
-  `teacherID` varchar(24) DEFAULT NULL,
+  `teacherID` varchar(50) DEFAULT NULL,
   `teacherName` varchar(255) DEFAULT NULL,
   `teacherSex` char(1) DEFAULT NULL,
   `teacherPhone` varchar(11) DEFAULT NULL,

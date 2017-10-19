@@ -67,7 +67,7 @@ $(function(){
 			}
 
 			// AJAX Ã·Ωª
-			var url = "do?action=user/teacher&start=edit";
+			var url = "do?action=user/teacher&start=info";
 			var data = {
 					  "blogId": blogId,
 					  "title": title,

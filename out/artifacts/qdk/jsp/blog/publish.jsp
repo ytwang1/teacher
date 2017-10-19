@@ -34,7 +34,7 @@ String basePath = request.getScheme()+"://"+request.getServerName()+":"+request.
     <a href="doView?action=forward&start=toMain">返回</a>
     <div>
       <span>账号:</span>
-      <input type="text" name="teacherID" class="speciedWidth" />
+      <input type="text" name="teacherAccount" class="speciedWidth" />
     </div>
     <div>
       <span>姓名:</span>
@@ -63,13 +63,13 @@ $(function(){
 	$("#publishBtn").click(function(event){
 		  $.NinTools.preventDefault(event);
 
-		  var teacherID = $.trim(publishForm.teacherID.value);
+		  var teacherAccount = $.trim(publishForm.teacherAccount.value);
 		  var teacherName = $.trim(publishForm.teacherName.value);
           var teacherSex = $.trim(publishForm.teacherSex.value);
           var teacherPhone = $.trim(publishForm.teacherPhone.value);
           var teacherEmail = $.trim(publishForm.teacherEmail.value);
 
-		  if(0 >= teacherID.length) {
+		  if(0 >= teacherAccount.length) {
 			  alert("账号不能为空");
 			  return false;
 			}
@@ -77,7 +77,7 @@ $(function(){
 			// AJAX 提交
 			var url = "do?action=user/teacher&start=create";
 			var data = {
-                        "teacherID": teacherID,
+                        "teacherAccount": teacherAccount,
                         "teacherName": teacherName,
                         "teacherSex": teacherSex,
                         "teacherPhone": teacherPhone,

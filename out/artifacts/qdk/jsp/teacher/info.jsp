@@ -40,7 +40,7 @@
     <form name="teacherForm">
         <div>
             <span>账号:</span>
-            <input type="text" name="teacherID" class="speciedWidth" />
+            <input type="text" name="teacherAccount" class="speciedWidth" />
         </div>
         <div>
             <span>姓名:</span>
@@ -70,13 +70,13 @@
         $("#infoBtn").click(function(event){
             $.NinTools.preventDefault(event);
 
-            var teacherID = $.trim(teacherForm.teacherID.value);
+            var teacherAccount = $.trim(teacherForm.teacherAccount.value);
             var teacherName = $.trim(teacherForm.teacherName.value);
             var teacherSex = $.trim(teacherForm.teacherSex.value);
             var teacherPhone = $.trim(teacherForm.teacherPhone.value);
             var teacherEmail = $.trim(teacherForm.teacherEmail.value);
 
-            if(0 >= teacherID.length) {
+            if(0 >= teacherAccount.length) {
                 alert("教师不能为空");
                 return false;
             }
@@ -85,7 +85,7 @@
             var url = "do?action=user/teacher&start=info";
             var data = {
                 "teacherId": teacherId,
-                "teacherID": teacherID,
+                "teacherAccount": teacherAccount,
                 "teacherName": teacherName,
                 "teacherSex": teacherSex,
                 "teacherPhone": teacherPhone,
@@ -118,7 +118,7 @@
 
             // 异步获取博文具体内容
             $.post(url, data, function(result){
-                teacherForm.teacherID.value = result.teacherID;
+                teacherForm.teacherAccount.value = result.teacherAccount;
                 teacherForm.teacherName.value = result.teacherName;
                 teacherForm.teacherSex.value = result.teacherSex;
                 teacherForm.teacherPhone.value = result.teacherPhone;

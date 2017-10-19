@@ -1,14 +1,14 @@
 ---------------- 新增教师 ----------------
 ---------------- 参数列表 ----------------
--- teacherID:     账号
+-- teacherAccount:     账号
 -- teacherName:   姓名
 -- teacherSex:    性别
 -- teacherPhone:  电话
 -- teacherEmail:  邮箱
 ---------------------------------------
 [create]=SQL
-=INSERT INTO teacherinfo(id, teacherID, teacherName, teacherSex, teacherPhone, teacherEmail) &&
-VALUES('[:System.nid]', '[:teacherID]', '[:teacherName]','[:teacherSex]','[:teacherPhone]','[:teacherEmail]')
+=INSERT INTO teacherinfo(id, teacherAccount, teacherName, teacherSex, teacherPhone, teacherEmail) &&
+VALUES('[:System.nid]', '[:teacherAccount]', '[:teacherName]','[:teacherSex]','[:teacherPhone]','[:teacherEmail]')
 JSON={"code":"200","msg":"教师新增成功","forwardUrl":"doView?action=forward&start=toMain"}
 
 

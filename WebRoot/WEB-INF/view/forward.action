@@ -15,9 +15,9 @@ ForwardURL=jsp/teacher/create.jsp
 
 -- 查看教师内容
 -- 参数
--- teacherID: 教师主键ID
+-- teacherId: 教师主键Id
 [viewTeacherInfo]
-request.teacherID==[:teacherID]
+request.teacherId==[:teacherId]
 ForwardURL=jsp/teacher/info.jsp
 
 

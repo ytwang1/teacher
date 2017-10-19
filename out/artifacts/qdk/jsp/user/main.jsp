@@ -121,9 +121,9 @@ $(function(){
 				  // 删除博文
 				  $("#teacherList a[name='teacherDelete']").click(function(event){
 					   $.NinTools.preventDefault(event); // 禁用a标签的默认单击事件
-					   var teacherID = $(this).attr("teacherID");
+					   var teacherId = $(this).attr("teacherId");
 					   var url = "do?action=user/teacher&start=teacherDelete";
-					   var data = {"teacherID": teacherID};
+					   var data = {"teacherId": teacherId};
 					   $.post(url, data, function(result){
 						   if("200" == result.code) {
 							   alert("操作成功");

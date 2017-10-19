@@ -1,28 +1,28 @@
 ---------------- 新增教师 ----------------
 ---------------- 参数列表 ----------------
--- teacherID:     账号
+-- teacherAccount:账号
 -- teacherName:   姓名
 -- teacherSex:    性别
 -- teacherPhone:  电话
 -- teacherEmail:  邮箱
 ---------------------------------------
 [create]=SQL
-=INSERT INTO teacherinfo(id, teacherID, teacherName, teacherSex, teacherPhone, teacherEmail) &&
-VALUES('[:System.nid]', '[:teacherID]', '[:teacherName]','[:teacherSex]','[:teacherPhone]','[:teacherEmail]')
+=INSERT INTO teacherinfo(id, teacherAccount, teacherName, teacherSex, teacherPhone, teacherEmail) &&
+VALUES('[:System.nid]', '[:teacherAccount]', '[:teacherName]','[:teacherSex]','[:teacherPhone]','[:teacherEmail]')
 JSON={"code":"200","msg":"教师新增成功","forwardUrl":"doView?action=forward&start=toMain"}
 
 
 ---------------- 编辑教师信息 ----------------
 ---------------- 参数列表 ----------------
--- teacherId:    博文主键ID
--- teacherID:     账号
+-- teacherId:     教师主键Id
+-- teacherAccount:账号
 -- teacherName:   姓名
 -- teacherSex:    性别
 -- teacherPhone:  电话
 -- teacherEmail:  邮箱
 ---------------------------------------
 [info]=SQL
-=UPDATE teacherinfo SET teacherID='[:teacherID]', teacherName='[:teacherName]', teacherSex='[:teacherSex]', teacherPhone='[:teacherPhone]', teacherEmail='[:teacherEmail]' WHERE id='[:teacherId]'
+=UPDATE teacherinfo SET teacherAccount='[:teacherAccount]', teacherName='[:teacherName]', teacherSex='[:teacherSex]', teacherPhone='[:teacherPhone]', teacherEmail='[:teacherEmail]' WHERE id='[:teacherId]'
 JSON={"code":"200","msg":"教师修改成功", "forwardUrl":"doView?action=forward&start=toMain"}
 
 ---------------- 教师列表  ----------------
@@ -41,17 +41,17 @@ JSON={"code":"200","data":{"list":[:temp.jsonResust],"curPage":[:#page],"countPe
 
 ---------------- 教师具体信息  ----------------
 ---------------- 参数列表 -------------------
--- teacherId:    教师ID
+-- teacherId:    教师Id
 ------------------------------------------
 [teacherDetail]
-temp.teacherID,temp.teacherName,temp.teacherSex,temp.teacherPhone,temp.teacherEmail=SELECT teacherID,teacherName,teacherSex,teacherPhone,teacherEmail FROM teacherinfo WHERE id='[:teacherId]'
-JSON={"code":"200","teacherID":"[:temp.teacherID]","teacherName":"[:temp.teacherName]","teacherSex":"[:temp.teacherSex]","teacherPhone":"[:temp.teacherPhone]","teacherEmail":"[:temp.teacherEmail]"}
+temp.teacherAccount,temp.teacherName,temp.teacherSex,temp.teacherPhone,temp.teacherEmail=SELECT teacherAccount,teacherName,teacherSex,teacherPhone,teacherEmail FROM teacherinfo WHERE id='[:teacherId]'
+JSON={"code":"200","teacherAccount":"[:temp.teacherAccount]","teacherName":"[:temp.teacherName]","teacherSex":"[:temp.teacherSex]","teacherPhone":"[:temp.teacherPhone]","teacherEmail":"[:temp.teacherEmail]"}
 
 
 
 ---------------- 删除教师  ----------------
 ---------------- 参数列表 -------------------
--- teacherId:    博文教师ID
+-- teacherId:    教师Id
 ------------------------------------------
 [teacherDelete]=SQL
 =DELETE FROM teacherinfo WHERE id='[:teacherId]'

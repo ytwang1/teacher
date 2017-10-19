@@ -47,7 +47,7 @@ String basePath = request.getScheme()+"://"+request.getServerName()+":"+request.
 </head>
 <body>
 <div>
-  <h3>Welcome, <%=SessionUtil.getVarStringValue(request, "loginId") %>.</h3><br/><br/>
+  <h3>欢迎，<%=SessionUtil.getVarStringValue(request, "loginId") %>.</h3><br/><br/>
   <a href="doView?action=forward&start=toCreate">新增教师</a>
   <a href="#" id="logout">退出系统</a><br/><br/>
   <%-- 博文列表容器，用于装载待渲染的内容 --%>
@@ -68,7 +68,7 @@ String basePath = request.getScheme()+"://"+request.getServerName()+":"+request.
     <a name="teacher" teacherId="[%=list[i].id%]" href="#">[%=list[i].teachername%]</a>
     </td>
     <td>
-    <a name="teacherDelete" teacherId="[%=list[i].id%]" href="#"><span class="glyphicon glyphicon-remove"></span></a>
+    <a name="teacherDelete" teacherId="[%=list[i].id%]" href="#"><span class="glyphicon glyphicon-remove-circle" style="color:#EE3B3B;"></span></a>
     </td>
 	[%}%]
 </tr>

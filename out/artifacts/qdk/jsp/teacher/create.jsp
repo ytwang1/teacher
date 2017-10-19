@@ -74,7 +74,7 @@
             }
 
             // AJAX Ã·Ωª
-            var url = "do?action=user/teacher&start=create";
+            var url = "do?action=user/teacher&start=create2";
             var data = {
                 "teacherAccount": teacherAccount,
                 "teacherName": teacherName,

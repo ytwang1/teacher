@@ -11,6 +11,17 @@
 VALUES('[:System.nid]', '[:teacherAccount]', '[:teacherName]','[:teacherSex]','[:teacherPhone]','[:teacherEmail]')
 JSON={"code":"200","msg":"教师新增成功","forwardUrl":"doView?action=forward&start=toMain"}
 
+[create2]
+temp.teacherAccount==[:teacherAccount]
+actionClass=com.netinnet.action.test
+temp.teacherPhone==[:request.teacherPhone222]
+nextAction=[create2_do]
+
+[create2_do]=SQL
+=INSERT INTO teacherinfo(id, teacherAccount, teacherName, teacherSex, teacherPhone, teacherEmail) &&
+VALUES('[:System.nid]', '[:teacherAccount]', '[:teacherName]','[:teacherSex]','[:request.teacherPhone222]','[:teacherEmail]')
+JSON={"code":"200","msg":"教师新增成功","forwardUrl":"doView?action=forward&start=toMain"}
+
 
 ---------------- 编辑教师信息 ----------------
 ---------------- 参数列表 ----------------

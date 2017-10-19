@@ -34,11 +34,11 @@ String basePath = request.getScheme()+"://"+request.getServerName()+":"+request.
   <form name="loginForm">
     <div>
       <span>µÇÂ¼ID:</span>
-      <input type="text" name="loginId" />
+      <input type="text" name="loginId" placeholder="ÇëÊäÈëÕËºÅ" />
     </div>
     <div>
       <span>ÃÜÂë:</span>
-      <input type="password" name="password" />
+      <input type="password" name="password" placeholder="ÇëÊäÈëÃÜÂë"/>
     </div>
     <div>
       <input type="submit" id="loginBtn" value="µÇÂ¼" class="btn btn-success" />

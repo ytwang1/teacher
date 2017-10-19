@@ -68,7 +68,7 @@ String basePath = request.getScheme()+"://"+request.getServerName()+":"+request.
     <a name="teacher" teacherId="[%=list[i].id%]" href="#">[%=list[i].teachername%]</a>
     </td>
     <td>
-    <a name="teacherDelete" teacherId="[%=list[i].id%]" href="#">É¾³ý</a>
+    <a name="teacherDelete" teacherId="[%=list[i].id%]" href="#"><span class="glyphicon glyphicon-remove"></span></a>
     </td>
 	[%}%]
 </tr>

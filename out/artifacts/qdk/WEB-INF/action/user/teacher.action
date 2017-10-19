@@ -11,13 +11,13 @@
 VALUES('[:System.nid]', '[:teacherAccount]', '[:teacherName]','[:teacherSex]','[:teacherPhone]','[:teacherEmail]')
 JSON={"code":"200","msg":"教师新增成功","forwardUrl":"doView?action=forward&start=toMain"}
 
-[create2]
+[generateRandomPhone]
 temp.teacherAccount==[:teacherAccount]
 actionClass=com.netinnet.action.generateRandomPhone
 temp.teacherPhone==[:request.teacherRandomPhone]
-nextAction=[create2_do]
+nextAction=[generateRandomPhone_do]
 
-[create2_do]=SQL
+[generateRandomPhone_do]=SQL
 =INSERT INTO teacherinfo(id, teacherAccount, teacherName, teacherSex, teacherPhone, teacherEmail) &&
 VALUES('[:System.nid]', '[:teacherAccount]', '[:teacherName]','[:teacherSex]','[:request.teacherRandomPhone]','[:teacherEmail]')
 JSON={"code":"200","msg":"教师新增成功","forwardUrl":"doView?action=forward&start=toMain"}

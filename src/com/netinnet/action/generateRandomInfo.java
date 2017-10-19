@@ -7,7 +7,7 @@ import java.util.Random;
 
 import javax.servlet.http.HttpServletRequest;
 
-public class generateRandomName implements ActionClass {
+public class generateRandomInfo implements ActionClass {
     public ActionClassResultDTO execute(HttpServletRequest request) {
 
         for (int i = 0; i < 11; i++) {//11代表循环11次，产生11个随机号码

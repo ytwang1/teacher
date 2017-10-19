@@ -41,8 +41,7 @@
         <textarea rows="" cols="" name="teacherName" class="speciedWidth"></textarea>
     </div>
     <div>
-        <span>性别:</span>
-        <input type="text" name="teacherSex" class="speciedWidth" />
+        <span>性别：</span><input type="radio" name="teacherSex" value="1" id="sexM" checked="checked" /><label for="sexM">男</label><input type="radio" name="teacherSex" value="0" id="sexW" /><label for="sexW">女</label>
     </div>
     <div>
         <span>电话:</span>

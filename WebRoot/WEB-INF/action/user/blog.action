@@ -2,7 +2,7 @@
 ---------------- 参数列表 ----------------
 -- teacherAccount:     账号
 -- teacherName:   姓名
--- teacherSex:    性别
+-- teacherSex:    性别，m-男 f-女
 -- teacherPhone:  电话
 -- teacherEmail:  邮箱
 ---------------------------------------

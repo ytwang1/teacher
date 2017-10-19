@@ -45,7 +45,7 @@
             <span>姓名:</span><input type="text" name="teacherName" class="speciedWidth" />
         </div>
         <div>
-            <span>性别:</span><input type="radio" name="teacherSex" value="m" id="sexM" checked="checked" /><label for="sexM">男</label><input type="radio" name="teacherSex" value="f" id="sexW" /><label for="sexW">女</label>
+            <span>性别:</span><input type="radio" name="teacherSex" value="1" id="sexM" checked="checked" /><label for="sexM">男</label><input type="radio" name="teacherSex" value="0" id="sexW" /><label for="sexW">女</label>
         </div>
         <div>
             <span>电话:</span><input type="text" name="teacherPhone" class="speciedWidth" />

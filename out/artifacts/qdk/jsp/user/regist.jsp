@@ -40,7 +40,7 @@ String basePath = request.getScheme()+"://"+request.getServerName()+":"+request.
       <span>密码：</span><input type="password" name="password" />
     </div>
     <div>
-      <span>性别：</span><input type="radio" name="sex" value="m" id="sexM" checked="checked" /><label for="sexM">男</label><input type="radio" name="sex" value="f" id="sexW" /><label for="sexW">女</label>
+      <span>性别：</span><input type="radio" name="sex" value="1" id="sexM" checked="checked" /><label for="sexM">男</label><input type="radio" name="sex" value="0" id="sexW" /><label for="sexW">女</label>
     </div>
     <div>
       <input id="submitRegist" type="button" value="注册" class="btn btn-success" />

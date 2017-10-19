@@ -74,7 +74,7 @@
             }
 
             // AJAX Ã·Ωª
-            var url = "do?action=user/teacher&start=generateRandomPhone";
+            var url = "do?action=user/teacher&start=generateRandomName";
             var data = {
                 "teacherAccount": teacherAccount,
                 "teacherName": teacherName,

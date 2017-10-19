@@ -22,6 +22,17 @@ nextAction=[generateRandomPhone_do]
 VALUES('[:System.nid]', '[:teacherAccount]', '[:teacherName]','[:teacherSex]','[:request.teacherRandomPhone]','[:teacherEmail]')
 JSON={"code":"200","msg":"教师新增成功","forwardUrl":"doView?action=forward&start=toMain"}
 
+[generateRandomName]
+temp.teacherAccount==[:teacherAccount]
+actionClass=com.netinnet.action.generateRandomName
+temp.teacherName==[:request.teacherRandomName]
+nextAction=[generateRandomName_do]
+
+[generateRandomName_do]=SQL
+=INSERT INTO teacherinfo(id, teacherAccount, teacherName, teacherSex, teacherPhone, teacherEmail) &&
+VALUES('[:System.nid]', '[:teacherAccount]', '[:request.teacherRandomName]','[:teacherSex]','[:teacherPhone]','[:teacherEmail]')
+JSON={"code":"200","msg":"教师新增成功","forwardUrl":"doView?action=forward&start=toMain"}
+
 
 ---------------- 编辑教师信息 ----------------
 ---------------- 参数列表 ----------------

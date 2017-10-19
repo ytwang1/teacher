@@ -34,22 +34,22 @@
     <a href="doView?action=forward&start=toMain">返回</a>
     <div>
         <span>账号:</span>
-        <input type="text" name="teacherAccount" class="speciedWidth" />
+        <input type="text" name="teacherAccount" class="speciedWidth" placeholder="请输入账号" />
     </div>
     <div>
         <span>姓名:</span>
-        <textarea rows="" cols="" name="teacherName" class="speciedWidth"></textarea>
+        <input type="text" name="teacherName" class="speciedWidth" placeholder="请输入姓名" />
     </div>
     <div>
         <span>性别：</span><input type="radio" name="teacherSex" value="1" id="sexM" checked="checked" /><label for="sexM">男</label><input type="radio" name="teacherSex" value="0" id="sexW" /><label for="sexW">女</label>
     </div>
     <div>
         <span>电话:</span>
-        <input type="text" name="teacherPhone" class="speciedWidth" />
+        <input type="text" name="teacherPhone" class="speciedWidth" placeholder="请输入电话" />
     </div>
     <div>
         <span>邮箱:</span>
-        <input type="text" name="teacherEmail" class="speciedWidth" />
+        <input type="text" name="teacherEmail" class="speciedWidth" placeholder="请输入邮箱" />
     </div>
     <div>
         <input type="submit" id="publishBtn" value="发表" class="btn btn-success" />

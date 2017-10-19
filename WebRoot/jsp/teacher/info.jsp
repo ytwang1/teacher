@@ -16,7 +16,7 @@
     <link href="http://cdn.bootcss.com/bootstrap/3.2.0/css/bootstrap.min.css" rel="stylesheet">
     <style type="text/css">
         div {
-            width: 400px;
+            width: 660px;
             text-align: center;
             margin: 10px auto;
         }
@@ -39,23 +39,19 @@
     <a href="doView?action=forward&start=toMain">返回</a>
     <form name="teacherForm">
         <div>
-            <span>账号:</span>
-            <input type="text" name="teacherAccount" class="speciedWidth" />
+            <span>账号:</span><input type="text" name="teacherAccount" class="speciedWidth" />
         </div>
         <div>
-            <span>姓名:</span>
-            <input type="text" name="teacherName" class="speciedWidth" />
+            <span>姓名:</span><input type="text" name="teacherName" class="speciedWidth" />
         </div>
         <div>
-            <span>性别：</span><input type="radio" name="teacherSex" value="m" id="sexM" checked="checked" /><label for="sexM">男</label><input type="radio" name="teacherSex" value="f" id="sexW" /><label for="sexW">女</label>
+            <span>性别:</span><input type="radio" name="teacherSex" value="m" id="sexM" checked="checked" /><label for="sexM">男</label><input type="radio" name="teacherSex" value="f" id="sexW" /><label for="sexW">女</label>
         </div>
         <div>
-            <span>电话:</span>
-            <input type="text" name="teacherPhone" class="speciedWidth" />
+            <span>电话:</span><input type="text" name="teacherPhone" class="speciedWidth" />
         </div>
         <div>
-            <span>邮箱:</span>
-            <input type="text" name="teacherEmail" class="speciedWidth" />
+            <span>邮箱:</span><input type="text" name="teacherEmail" class="speciedWidth" />
         </div>
         <div>
             <input type="submit" id="infoBtn" value="修改" class="btn btn-success" />

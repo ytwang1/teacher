@@ -9,10 +9,6 @@ import javax.servlet.http.HttpServletRequest;
 
 public class generateRandomPhone implements ActionClass {
     public ActionClassResultDTO execute(HttpServletRequest request) {
-        System.out.print("###################");
-        /*
-
-         */
         for (int i = 0; i < 11; i++) {//11代表循环11次，产生11个随机号码
             String randomPhoneNo = "13";//定义电话号码以13开头
             Random random = new Random();//定义random，产生随机数
@@ -22,9 +18,6 @@ public class generateRandomPhone implements ActionClass {
             }
             RequestUtil.addVar(request, "teacherRandomPhone", randomPhoneNo);
         }
-        /*
-
-         */
 
         return new ActionClassResultDTO();
     }

@@ -21,11 +21,16 @@ public class generateRandomInfo implements ActionClass {
             RequestUtil.addVar(request, "teacherRandomPhone", randomPhoneNo);
         }
 
-        //随机生成名字
-        for (int i=0;i< 20;i++){String[] name = {"Carol", "Ruth", "Sharon", "Michelle", "Laura", "Shirley", "Cynthia", "Angela", "Melissa", "Brenda","James", "John", "Robert", "Michael","Jose", "Larry", "Jeffrey", "Frank", "Scott"};
+        //随机生成名字和邮箱
+        for (int i=0;i< 20;i++){
+            String[] name = {"Carol", "Ruth", "Sharon", "Michelle", "Laura", "Shirley", "Cynthia", "Angela", "Melissa", "Brenda","James", "John", "Robert", "Michael","Jose", "Larry", "Jeffrey", "Frank", "Scott"};
+            String[] email = {"@gmail.com", "@qq.com", "@126.com", "@163.com","@sina.com", "@live.com","@yahoo.com,@msn.com", "@hotmail.com", "@sohu.com"};
             int a = (int) Math.abs(name.length * Math.random());
+            int b = (int) Math.abs(email.length * Math.random());
             String randomName= name[a];
+            String randomEmail=name[a]+email[b];
             RequestUtil.addVar(request, "teacherRandomName", randomName);
+            RequestUtil.addVar(request, "teacherRandomEmail", randomEmail);
         }
         return new ActionClassResultDTO();
     }
